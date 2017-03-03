@@ -1,10 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace AppAPI
 {
     [Route("api/[controller]")]
     public class TestController : Controller
     {
+        private ILogger _logger;
+        public TestController(ILogger<TestController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet]
         public IActionResult Get()
         {
@@ -15,7 +22,9 @@ namespace AppAPI
         [Route("redirect")]
         public IActionResult Redirect()
         {
-            return TemporaryRedirect("http://localhost:5001/api/test");
+            var redirectUrl = "http://localhost:5001/api/test";
+            _logger.LogInformation($"Redirecting to: {redirectUrl}"); 
+            return TemporaryRedirect(redirectUrl);
         }
 
         public IActionResult TemporaryRedirect(string url)
